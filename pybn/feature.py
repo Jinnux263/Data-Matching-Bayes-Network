@@ -27,35 +27,35 @@ def compare_strings_fuzz(string1, string2):
 
 def feature_address(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_spacy(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
 
 def feature_author(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_Levenshtein(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_Levenshtein(string1, string2) >= 0.7 else 2
 
 def feature_page(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_spacy(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
 
 def feature_publisher(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_spacy(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
 
 def feature_title(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_spacy(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
 
 def feature_venue(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_Levenshtein(string1, string2) >= 0.7
+        return 1
+    return 0 if compare_strings_Levenshtein(string1, string2) >= 0.7 else 2
 
 def feature_year(string1, string2):
     if isnull(string1) or isnull(string2):
-        return False
-    return compare_strings_fuzz(string1, string2) >= 0.8
+        return 1
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.8 else 2
