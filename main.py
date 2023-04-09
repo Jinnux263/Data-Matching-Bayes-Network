@@ -1,14 +1,76 @@
 from pybn import *
 import pandas as pd
 
-df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
-gt = pd.read_csv("./data/cora_gt.csv", sep='|', engine='python')
+## Test the feature functions work properly
+# df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
+# gt = pd.read_csv("./data/cora_gt.csv", sep='|', engine='python')
+# del df['editor']
+# del df['institution']
+# del df['month']
+# del df['note']
+# del df['volume']
 
-del df['editor']
-del df['institution']
-del df['month']
-del df['note']
-del df['volume']
+# r = 64
+# com_r = 65
+# rowA = df.loc[r]
+# rowB = df.loc[com_r]
+
+# print("TEST: ")
+# print("\tAddress:\t", feature_address(rowA['address'], rowB['address']))
+# print("\tAuthor:\t\t", feature_author(rowA['author'], rowB['author']))
+# print("\tPage:\t\t", feature_page(rowA['pages'], rowB['pages']))
+# print("\tPublisher:\t", feature_publisher(rowA['publisher'], rowB['publisher']))
+# print("\tTitle:\t\t", feature_title(rowA['title'], rowB['title']))
+# print("\tVenue:\t\t", feature_venue(rowA['venue'], rowB['venue']))
+# print("\tYear:\t\t", feature_year(rowA['year'], rowB['year']))
+# print("")
+
+# Check if two entity match or not in reality
+def check_match_gt(gt, i, j):
+  # Check by binary search i and sequence search j
+  return true;
+
+
+def generate_data():
+  df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
+  gt = pd.read_csv("./data/cora_gt.csv", sep='|', engine='python')
+  del df['editor']
+  del df['institution']
+  del df['month']
+  del df['note']
+  del df['volume']
+  del df['Unnamed: 13']
+
+
+  new_df = pd.DataFrame()
+  data_top = df.head() 
+  for header in data_top:
+    new_df[header] = None
+  del new_df['Entity Id']
+
+  # Add Match column
+  # new_df['Match'] = None
+  # print(new_df)
+
+  # Generate the data
+  # for i in range(0, 10):
+  #   for j in range(i + 1, 10):
+  # for i in range(0, len(df.index) - 1):
+  #   for i in range(i, len(df.index) - 1):
+  #     isMatch = check_match_gt(gt, i, j)
+  #     new_df.loc[len(new_df.index)] =  [
+  #       feature_address(df.loc[i]['address'], df.loc[j]['address']),
+  #       feature_author(df.loc[i]['author'], df.loc[j]['author']),
+  #       feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
+  #       feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
+  #       feature_title(df.loc[i]['title'], df.loc[j]['title']),
+  #       feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
+  #       feature_year(df.loc[i]['year'], df.loc[j]['year']),
+  #       isMatch
+  #     ]
+
+  new_df.to_csv("data/train_data.csv", sep="|")
+
 
 
 def setup_Network():
@@ -84,6 +146,19 @@ def calculate_match(net, Address, Author, Page, Publisher, Title, Venue, Year):
   net.computeBeliefs()
 
 
+def display(Match, Address, Author, Page, Publisher, Title, Venue, Year):
+  # Print the results for each node
+  print("RESULT:")
+  print('\tMatch:\t\t', Match.getBeliefs())
+  print('\tAddress:\t', Address.getBeliefs())
+  print('\tAuthor:\t\t', Author.getBeliefs())
+  print('\tPage:\t\t', Page.getBeliefs())
+  print('\tPublisher:\t', Publisher.getBeliefs())
+  print('\tTitle:\t\t', Title.getBeliefs())
+  print('\tVenue:\t\t', Venue.getBeliefs())
+  print('\tYear:\t\t', Year.getBeliefs())
+
+
 # Define a main() function.
 def main():
   net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
@@ -99,27 +174,21 @@ def main():
   YearEvident = 1
 
 
-  calculate_match(net,
-  Address = AddressEvident,
-  Author = AuthorEvident,
-  Page = PageEvident,
-  Publisher = PublisherEvident,
-  Title = TitleEvident,
-  Venue =   VenueEvident,
-  Year = YearEvident)
+  # calculate_match(net,
+  # Address = AddressEvident,
+  # Author = AuthorEvident,
+  # Page = PageEvident,
+  # Publisher = PublisherEvident,
+  # Title = TitleEvident,
+  # Venue =   VenueEvident,
+  # Year = YearEvident)
 
-  # Print the results for each node
-  print("RESULT:")
-  print('\tMatch:\t\t', Match.getBeliefs())
-  print('\tAddress:\t', Address.getBeliefs())
-  print('\tAuthor:\t\t', Author.getBeliefs())
-  print('\tPage:\t\t', Page.getBeliefs())
-  print('\tPublisher:\t', Publisher.getBeliefs())
-  print('\tTitle:\t\t', Title.getBeliefs())
-  print('\tVenue:\t\t', Venue.getBeliefs())
-  print('\tYear:\t\t', Year.getBeliefs())
+  # display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
-  # This is the standard boilerplate that calls the main() function.
+  generate_data()
+
+
+# This is the standard boilerplate that calls the main() function.
 if __name__ == '__main__':
   main()
 
