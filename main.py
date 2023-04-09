@@ -12,10 +12,10 @@ del df['volume']
 
 
 def setup_Network():
-    # Create a Network
+  # Create a Network
   net = Network('CoraProblem')
 
-    # Setup node
+  # Setup node
   Match = Node('Match')
   Match.addOutcomes(['match','notmatch'])
 
@@ -40,22 +40,21 @@ def setup_Network():
   Year = Node('Year')
   Year.addOutcomes(['match','unknown','notmatch'])
 
-#   Set up the graph
+  # Set up the graph
   arc_Match_Address = Arc(Match,Address)
-#   arc_Match_Author = Arc(Match,Author)
-#   arc_Match_Page = Arc(Match,Page)
-#   arc_Match_Publisher = Arc(Match,Publisher)
-#   arc_Match_Title = Arc(Match,Title)
-#   arc_Match_Venue = Arc(Match,Venue)
-#   arc_Match_Year = Arc(Match,Year)
+  # arc_Match_Author = Arc(Match,Author)
+  # arc_Match_Page = Arc(Match,Page)
+  # arc_Match_Publisher = Arc(Match,Publisher)
+  # arc_Match_Title = Arc(Match,Title)
+  # arc_Match_Venue = Arc(Match,Venue)
+  # arc_Match_Year = Arc(Match,Year)
 
-#   Check table size
-#   print (Address.getTableSize())
+  # Check table size
+  # print (Address.getTableSize())
 
   # Conditional distribution for node 'Match'
   Match.setProbabilities([0.02,0.98])
-  Address.setProbabilities([0.96, 0.04, 0, 0.2, 0.2, 0.6])
-#   Address.setProbabilities([0.96, 0.04, 0])
+  Address.setProbabilities([0.96, 0.04, 0, 0.01, 0.3, 0.69])
   Author.setProbabilities([0.96, 0.04, 0])
   Page.setProbabilities([0.96, 0.04, 0])
   Publisher.setProbabilities([0.96, 0.04, 0])
@@ -63,27 +62,29 @@ def setup_Network():
   Venue.setProbabilities([0.96, 0.04, 0])
   Year.setProbabilities([0.96, 0.04, 0])
 
-#   net.addNodes([Address, Match])
-  net.addNodes([Address, Author, Page, Publisher, Title, Venue, Year, Match])
+  # net.addNodes([Address, Match])
+  net.addNodes([Match, Address, Author, Page, Publisher, Title, Venue, Year])
   return net, Match, Address, Author, Page, Publisher, Title, Venue, Year
 
-def calculate_match(net, Match, Address, Author, Page, Publisher, Title, Venue, Year):
-    #   Set evidence
-  net.setEvidence('Address', Match)
-  net.setEvidence('Author', Address)
-  net.setEvidence('Page', Page)
-  net.setEvidence('Publisher', Publisher)
-  net.setEvidence('Title', Title)
-  net.setEvidence('Venue', Venue)
-  net.setEvidence('Year', Year)
+
+
+def calculate_match(net, Address, Author, Page, Publisher, Title, Venue, Year):
+  # Set evidence
+  net.setEvidence('Address', Address)
+  # net.setEvidence('Author', Address)
+  # net.setEvidence('Page', Page)
+  # net.setEvidence('Publisher', Publisher)
+  # net.setEvidence('Title', Title)
+  # net.setEvidence('Venue', Venue)
+  # net.setEvidence('Year', Year)
 
   net.computeBeliefs()
 
 
-  # Define a main() function.
+# Define a main() function.
 def main():
   net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
-  calculate_match(net, Match = 1, Address = 1, Author = 1, Page = 1, Publisher = 1, Title = 1, Venue = 1, Year = 1)
+  calculate_match(net, Address = 1, Author = 1, Page = 1, Publisher = 1, Title = 1, Venue = 1, Year = 1)
 
   # Print the results for each node
   print("RESULT:")
