@@ -49,7 +49,7 @@ def check_match_gt(gt, i, j):
 
 def generate_data():
   df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
-  gt = pd.read_csv("./data/cora_gt.csv", sep=',', engine='python')
+  gt = pd.read_csv("./data/cora_gt.csv", sep=',', header=None, engine='python')
   del df['editor']
   del df['institution']
   del df['month']
@@ -70,28 +70,28 @@ def generate_data():
   new_df['Match'] = None
   # print(new_df)
 
-  # print(check_match_gt(gt, 64, 66))
+  # print('Check 1 - 2: ', check_match_gt(gt, 1, 2))
 
   # # Generate the data
-  for i in range(0, 10):
-    for j in range(i + 1, 10):
-  # for i in range(0, len(df.index) - 1):
-  #   for i in range(i + 1, len(df.index) - 1):
-      isMatch = check_match_gt(gt, i, j)
-      new_df.loc[len(new_df.index)] =  [
-        i,
-        j,
-        feature_address(df.loc[i]['address'], df.loc[j]['address']),
-        feature_author(df.loc[i]['author'], df.loc[j]['author']),
-        feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
-        feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
-        feature_title(df.loc[i]['title'], df.loc[j]['title']),
-        feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
-        feature_year(df.loc[i]['year'], df.loc[j]['year']),
-        isMatch
-      ]
+  # for i in range(0, 10):
+  #   for j in range(i + 1, 10):
+  # # for i in range(0, len(df.index) - 1):
+  # #   for i in range(i + 1, len(df.index) - 1):
+  #     isMatch = check_match_gt(gt, i, j)
+  #     new_df.loc[len(new_df.index)] =  [
+  #       i,
+  #       j,
+  #       feature_address(df.loc[i]['address'], df.loc[j]['address']),
+  #       feature_author(df.loc[i]['author'], df.loc[j]['author']),
+  #       feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
+  #       feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
+  #       feature_title(df.loc[i]['title'], df.loc[j]['title']),
+  #       feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
+  #       feature_year(df.loc[i]['year'], df.loc[j]['year']),
+  #       isMatch
+  #     ]
 
-  new_df.to_csv("data/train_data.csv", sep="|")
+  # new_df.to_csv("data/train_data.csv", sep="|")
 
 
 
