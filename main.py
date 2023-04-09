@@ -10,102 +10,93 @@ del df['month']
 del df['note']
 del df['volume']
 
-# print(df.describe())
 
-# print(compare_strings(df['author'].iloc[64], df['author'].iloc[65]))
-# print(compare_strings_spacy(df['author'].iloc[64], df['author'].iloc[65]))
-# print(feature_year('1994', "(1994),"))
+def setup_Network():
+    # Create a Network
+  net = Network('CoraProblem')
 
-# print(df['address'].iloc[1])
+    # Setup node
+  Match = Node('Match')
+  Match.addOutcomes(['match','notmatch'])
 
-#   # Define a main() function.
-# def main():
+  Address = Node('Address')
+  Address.addOutcomes(['match','unknown','notmatch'])
 
-#   # Create a Network
-#   net = Network('CarProblem')
+  Author = Node('Author')
+  Author.addOutcomes(['match','unknown','notmatch'])
 
-#   # Create Node 'Fuel'
-#   Fu = Node('Fu')
+  Page = Node('Page')
+  Page.addOutcomes(['match','unknown','notmatch'])
 
-#   # Setting number (and name) of outcomes
-#   Fu.addOutcome('yes')
-#   Fu.addOutcome('no')
+  Publisher = Node('Publisher')
+  Publisher.addOutcomes(['match','unknown','notmatch'])
 
-#   # Create node 'Clean Spark Plugs'
-#   SP = Node('SP')
+  Title = Node('Title')
+  Title.addOutcomes(['match','unknown','notmatch'])
 
-#   # Setting number (and name) of outcomes
-#   SP.addOutcomes(['yes','no'])
+  Venue = Node('Venue')
+  Venue.addOutcomes(['match','unknown','notmatch'])
 
-#   # Create node 'Fuel Meter Standing'
-#   FM = Node('FM')
+  Year = Node('Year')
+  Year.addOutcomes(['match','unknown','notmatch'])
 
-#   # Setting number (and name) of outcomes
-#   FM.addOutcomes(['full','half','empty'])
+#   Set up the graph
+  arc_Match_Address = Arc(Match,Address)
+#   arc_Match_Author = Arc(Match,Author)
+#   arc_Match_Page = Arc(Match,Page)
+#   arc_Match_Publisher = Arc(Match,Publisher)
+#   arc_Match_Title = Arc(Match,Title)
+#   arc_Match_Venue = Arc(Match,Venue)
+#   arc_Match_Year = Arc(Match,Year)
 
-#   # Create node 'Start'
-#   St = Node('St')
+#   Check table size
+#   print (Address.getTableSize())
 
-#   # Setting number (and name) of outcomes
-#   St.addOutcomes(['yes','no'])
+  # Conditional distribution for node 'Match'
+  Match.setProbabilities([0.02,0.98])
+  Address.setProbabilities([0.96, 0.04, 0, 0.2, 0.2, 0.6])
+#   Address.setProbabilities([0.96, 0.04, 0])
+  Author.setProbabilities([0.96, 0.04, 0])
+  Page.setProbabilities([0.96, 0.04, 0])
+  Publisher.setProbabilities([0.96, 0.04, 0])
+  Title.setProbabilities([0.96, 0.04, 0])
+  Venue.setProbabilities([0.96, 0.04, 0])
+  Year.setProbabilities([0.96, 0.04, 0])
 
-#   # Add arc from 'Fuel' to 'Fuel Meter Standing'
-#   arc_Fu_FM = Arc(Fu,FM)
+#   net.addNodes([Address, Match])
+  net.addNodes([Address, Author, Page, Publisher, Title, Venue, Year, Match])
+  return net, Match, Address, Author, Page, Publisher, Title, Venue, Year
 
-#   # Add arc from 'Fuel' to 'Start'
-#   arc_Fu_St = Arc(Fu,St)
+def calculate_match(net, Match, Address, Author, Page, Publisher, Title, Venue, Year):
+    #   Set evidence
+  net.setEvidence('Address', Match)
+  net.setEvidence('Author', Address)
+  net.setEvidence('Page', Page)
+  net.setEvidence('Publisher', Publisher)
+  net.setEvidence('Title', Title)
+  net.setEvidence('Venue', Venue)
+  net.setEvidence('Year', Year)
 
-#   # Add arc from 'Clean Spark Plugs' to 'Start'
-#   arc_SP_St = Arc(SP,St)
-
-
-#   # Shows the size of the probability matrix 'Start'
-#   # print FM.getTableSize()
-
-#   # Conditional distribution for node 'Fuel'
-#   Fu.setProbabilities([0.98,0.02])
-
-#   # Conditional distribution for node 'Clean Spark Plugs'
-#   SP.setProbabilities([0.96,0.04])
-
-#   # Conditional distribution for node 'Fuel Meter Standing'
-#   FM.setProbabilities([0.39, 0.60, 0.01, 0.001, 0.001, 0.998])
-
-#   # Conditional distribution for node 'Start'
-#   St.setProbabilities([0.99, 0.01, 0.01, 0.99, 0.0, 1.0, 0.0, 1.0])
+  net.computeBeliefs()
 
 
-#   # Changing the nodes spacial and visual attributes:
-#   Fu.setNodePosition(100,10)
+  # Define a main() function.
+def main():
+  net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
+  calculate_match(net, Match = 1, Address = 1, Author = 1, Page = 1, Publisher = 1, Title = 1, Venue = 1, Year = 1)
 
-#   SP.setNodePosition(300,10)
+  # Print the results for each node
+  print("RESULT:")
+  print('\tMatch:\t\t', Match.getBeliefs())
+  print('\tAddress:\t', Address.getBeliefs())
+  print('\tAuthor:\t\t', Author.getBeliefs())
+  print('\tPage:\t\t', Page.getBeliefs())
+  print('\tPublisher:\t', Publisher.getBeliefs())
+  print('\tTitle:\t\t', Title.getBeliefs())
+  print('\tVenue:\t\t', Venue.getBeliefs())
+  print('\tYear:\t\t', Year.getBeliefs())
 
-#   FM.setNodePosition(0,150)
-#   FM.setInteriorColor('cc99ff')
-
-#   St.setNodePosition(200,150)
-#   St.setInteriorColor('ff0000')
-
-#   # Add notes to network
-#   net.addNodes([Fu,SP,FM,St])
-
-#   # Write file
-#   net.writeFile('CarProblem.xdsl')
-
-#   # Set evidence
-#   net.setEvidence('FM',2)
-#   net.setEvidence('St',2)
-
-#   # Compute the beliefs for the network
-#   net.computeBeliefs()
-
-#   # Print the results for each node
-#   print('Fu', Fu.getBeliefs())
-#   print('SP', SP.getBeliefs())
-#   print('St', St.getBeliefs())
-#   print('FM', FM.getBeliefs())
-
-#   # This is the standard boilerplate that calls the main() function.
-# if __name__ == '__main__':
-#   main()
+  # This is the standard boilerplate that calls the main() function.
+if __name__ == '__main__':
+  main()
 
