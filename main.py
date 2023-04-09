@@ -1,30 +1,6 @@
 from pybn import *
 import pandas as pd
 
-## Test the feature functions work properly
-# df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
-# gt = pd.read_csv("./data/cora_gt.csv", sep='|', engine='python')
-# del df['editor']
-# del df['institution']
-# del df['month']
-# del df['note']
-# del df['volume']
-
-# r = 64
-# com_r = 65
-# rowA = df.loc[r]
-# rowB = df.loc[com_r]
-
-# print("TEST: ")
-# print("\tAddress:\t", feature_address(rowA['address'], rowB['address']))
-# print("\tAuthor:\t\t", feature_author(rowA['author'], rowB['author']))
-# print("\tPage:\t\t", feature_page(rowA['pages'], rowB['pages']))
-# print("\tPublisher:\t", feature_publisher(rowA['publisher'], rowB['publisher']))
-# print("\tTitle:\t\t", feature_title(rowA['title'], rowB['title']))
-# print("\tVenue:\t\t", feature_venue(rowA['venue'], rowB['venue']))
-# print("\tYear:\t\t", feature_year(rowA['year'], rowB['year']))
-# print("")
-
 # Check if two entity match or not in reality
 def check_match_gt(gt, i, j):
   # Check by binary search i and sequence search j
@@ -46,7 +22,6 @@ def check_match_gt(gt, i, j):
     l += 1
   return False;
 
-
 def generate_data():
   df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
   gt = pd.read_csv("./data/cora_gt.csv", sep=',', header=None, engine='python')
@@ -57,9 +32,7 @@ def generate_data():
   del df['volume']
   del df['Unnamed: 13']
 
-
   new_df = pd.DataFrame()
-  
   new_df['EntityA'] = None
   new_df['EntityB'] = None
   data_top = df.head() 
@@ -68,31 +41,38 @@ def generate_data():
   del new_df['Entity Id']
   # Add Match column
   new_df['Match'] = None
-  # print(new_df)
-
-  # print('Check 1 - 2: ', check_match_gt(gt, 1, 2))
 
   # # Generate the data
-  # for i in range(0, 10):
-  #   for j in range(i + 1, 10):
-  # # for i in range(0, len(df.index) - 1):
-  # #   for i in range(i + 1, len(df.index) - 1):
-  #     isMatch = check_match_gt(gt, i, j)
-  #     new_df.loc[len(new_df.index)] =  [
-  #       i,
-  #       j,
-  #       feature_address(df.loc[i]['address'], df.loc[j]['address']),
-  #       feature_author(df.loc[i]['author'], df.loc[j]['author']),
-  #       feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
-  #       feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
-  #       feature_title(df.loc[i]['title'], df.loc[j]['title']),
-  #       feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
-  #       feature_year(df.loc[i]['year'], df.loc[j]['year']),
-  #       isMatch
-  #     ]
+  for i in range(0, len(df.index)):
+    for i in range(i + 1, len(df.index)):
+      isMatch = check_match_gt(gt, i, j)
+      new_df.loc[len(new_df.index)] =  [
+        i,
+        j,
+        feature_address(df.loc[i]['address'], df.loc[j]['address']),
+        feature_author(df.loc[i]['author'], df.loc[j]['author']),
+        feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
+        feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
+        feature_title(df.loc[i]['title'], df.loc[j]['title']),
+        feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
+        feature_year(df.loc[i]['year'], df.loc[j]['year']),
+        isMatch
+      ]
 
-  # new_df.to_csv("data/train_data.csv", sep="|")
+  new_df.to_csv("data/train_data.csv", sep="|")
 
+
+# TODO: train the model
+def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year):
+  # Conditional distribution for node 'Match'
+  Match.setProbabilities([0.0101526723,1 - 0.0101526723])
+  Address.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Author.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Page.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Publisher.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Title.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Venue.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
+  Year.setProbabilities([0.1, 0.4, 0.5, 0.03, 0.42, 0.55])
 
 
 def setup_Network():
@@ -137,14 +117,7 @@ def setup_Network():
   # print (Address.getTableSize())
 
   # Conditional distribution for node 'Match'
-  Match.setProbabilities([0.0101526723,1 - 0.0101526723])
-  Address.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Author.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Page.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Publisher.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Title.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Venue.setProbabilities([0.5, 0.3, 0.2, 0.05, 0.3, 0.65])
-  Year.setProbabilities([0.1, 0.4, 0.5, 0.03, 0.42, 0.55])
+  setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
   # net.addNodes([Address, Match])
   net.addNodes([Match, Address, Author, Page, Publisher, Title, Venue, Year])
@@ -183,31 +156,32 @@ def display(Match, Address, Author, Page, Publisher, Title, Venue, Year):
 
 # Define a main() function.
 def main():
+  #generate the data
+  generate_data()
+
+  # TODO: Train the network
   net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
 
-
+  # Apply the network
   # Setup Evident: 0 - match, 1 - unknown, 2 - notmatch
-  # AddressEvident = 2
-  # AuthorEvident = 1
-  # PageEvident = 2
-  # PublisherEvident = 2
-  # TitleEvident = 1
-  # VenueEvident = 3
-  # YearEvident = 1
+  AddressEvident = 2
+  AuthorEvident = 1
+  PageEvident = 2
+  PublisherEvident = 2
+  TitleEvident = 1
+  VenueEvident = 3
+  YearEvident = 1
 
+  calculate_match(net,
+  Address = AddressEvident,
+  Author = AuthorEvident,
+  Page = PageEvident,
+  Publisher = PublisherEvident,
+  Title = TitleEvident,
+  Venue =   VenueEvident,
+  Year = YearEvident)
 
-  # calculate_match(net,
-  # Address = AddressEvident,
-  # Author = AuthorEvident,
-  # Page = PageEvident,
-  # Publisher = PublisherEvident,
-  # Title = TitleEvident,
-  # Venue =   VenueEvident,
-  # Year = YearEvident)
-
-  # display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
-
-  generate_data()
+  display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
 
 # This is the standard boilerplate that calls the main() function.
