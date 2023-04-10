@@ -44,7 +44,7 @@ def generate_data():
 
   # # Generate the data
   for i in range(0, len(df.index)):
-    for i in range(i + 1, len(df.index)):
+    for j in range(i + 1, len(df.index)):
       isMatch = check_match_gt(gt, i, j)
       new_df.loc[len(new_df.index)] =  [
         i,
