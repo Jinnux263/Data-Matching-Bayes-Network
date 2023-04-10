@@ -2,6 +2,9 @@ from pybn import *
 import pandas as pd
 import json
 
+
+threshold = 0.5
+
 ####################### This code is used for generate the train_data.csv file
 # Check if two entity match or not in reality
 def check_match_gt(gt, i, j):
@@ -133,7 +136,6 @@ def calculate_the_feature():
 
 ####################### Setup and used the Bayes Network
 def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year):
-  # Conditional distribution for node 'Match'
   # count = calculate_the_feature()
   ## This code will generate orther way if run again cause I have not change code
   # total = count['total']
@@ -164,8 +166,6 @@ def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Titl
     for header in count[match_header]:
       for val in count[match_header][header]:
         count[match_header][header][val] = my_dict[match_header][header][str(val)]
-
-  print(count)
 
   total = count['Match']['Match'][1] + count['NotMatch']['Match'][0]
 
@@ -241,108 +241,139 @@ def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Titl
 
 def setup_Network():
   # Create a Network
-  net = Network('CoraProblem')
+  Fnet = Network('CoraProblem')
 
   # Setup node
-  Match = Node('Match')
-  Match.addOutcomes(['match','notmatch'])
+  FMatch = Node('Match')
+  FMatch.addOutcomes(['match','notmatch'])
 
-  Address = Node('Address')
-  Address.addOutcomes(['match','unknown','notmatch'])
+  FAddress = Node('Address')
+  FAddress.addOutcomes(['match','unknown','notmatch'])
 
-  Author = Node('Author')
-  Author.addOutcomes(['match','unknown','notmatch'])
+  FAuthor = Node('Author')
+  FAuthor.addOutcomes(['match','unknown','notmatch'])
 
-  Page = Node('Page')
-  Page.addOutcomes(['match','unknown','notmatch'])
+  FPage = Node('Page')
+  FPage.addOutcomes(['match','unknown','notmatch'])
 
-  Publisher = Node('Publisher')
-  Publisher.addOutcomes(['match','unknown','notmatch'])
+  FPublisher = Node('Publisher')
+  FPublisher.addOutcomes(['match','unknown','notmatch'])
 
-  Title = Node('Title')
-  Title.addOutcomes(['match','unknown','notmatch'])
+  FTitle = Node('Title')
+  FTitle.addOutcomes(['match','unknown','notmatch'])
 
-  Venue = Node('Venue')
-  Venue.addOutcomes(['match','unknown','notmatch'])
+  FVenue = Node('Venue')
+  FVenue.addOutcomes(['match','unknown','notmatch'])
 
-  Year = Node('Year')
-  Year.addOutcomes(['match','unknown','notmatch'])
+  FYear = Node('Year')
+  FYear.addOutcomes(['match','unknown','notmatch'])
 
   # Set up the graph
-  arc_Match_Address = Arc(Match,Address)
-  arc_Match_Author = Arc(Match,Author)
-  arc_Match_Page = Arc(Match,Page)
-  arc_Match_Publisher = Arc(Match,Publisher)
-  arc_Match_Title = Arc(Match,Title)
-  arc_Match_Venue = Arc(Match,Venue)
-  arc_Match_Year = Arc(Match,Year)
+  arc_Match_Address = Arc(FMatch,FAddress)
+  arc_Match_Author = Arc(FMatch,FAuthor)
+  arc_Match_Page = Arc(FMatch,FPage)
+  arc_Match_Publisher = Arc(FMatch,FPublisher)
+  arc_Match_Title = Arc(FMatch,FTitle)
+  arc_Match_Venue = Arc(FMatch,FVenue)
+  arc_Match_Year = Arc(FMatch,FYear)
 
   # Check table size
-  # print (Address.getTableSize())
+  # print (FAddress.getTableSize())
 
   # Conditional distribution for node 'Match'
-  setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year)
+  setup_Probability_Distribution(FMatch, FAddress, FAuthor, FPage, FPublisher, FTitle, FVenue, FYear)
 
   # net.addNodes([Address, Match])
-  net.addNodes([Match, Address, Author, Page, Publisher, Title, Venue, Year])
-  return net, Match, Address, Author, Page, Publisher, Title, Venue, Year
+  Fnet.addNodes([FMatch, FAddress, FAuthor, FPage, FPublisher, FTitle, FVenue, FYear])
+  return Fnet, FMatch, FAddress, FAuthor, FPage, FPublisher, FTitle, FVenue, FYear
 
 
-def calculate_match(net, Address, Author, Page, Publisher, Title, Venue, Year):
-  net.setEvidence('Address', Address)
-  net.setEvidence('Author', Author)
-  net.setEvidence('Page', Page)
-  net.setEvidence('Publisher', Publisher)
-  net.setEvidence('Title', Title)
-  net.setEvidence('Venue', Venue)
-  net.setEvidence('Year', Year)
+def calculate_match(Inet, IAddress, IAuthor, IPage, IPublisher, ITitle, IVenue, IYear):
+  Inet.setEvidence('Address', IAddress)
+  Inet.setEvidence('Author', IAuthor)
+  Inet.setEvidence('Page', IPage)
+  Inet.setEvidence('Publisher', IPublisher)
+  Inet.setEvidence('Title', ITitle)
+  Inet.setEvidence('Venue', IVenue)
+  Inet.setEvidence('Year', IYear)
 
-  net.computeBeliefs()
+  Inet.computeBeliefs()
 
 # helper function display result
-def display(Match, Address, Author, Page, Publisher, Title, Venue, Year):
+def display(IMatch, IAddress, IAuthor, IPage, IPublisher, ITitle, IVenue, IYear):
   # Print the results for each node
   print("RESULT:")
-  print('\tMatch:\t\t', Match.getBeliefs())
-  print('\tAddress:\t', Address.getBeliefs())
-  print('\tAuthor:\t\t', Author.getBeliefs())
-  print('\tPage:\t\t', Page.getBeliefs())
-  print('\tPublisher:\t', Publisher.getBeliefs())
-  print('\tTitle:\t\t', Title.getBeliefs())
-  print('\tVenue:\t\t', Venue.getBeliefs())
-  print('\tYear:\t\t', Year.getBeliefs())
+  print('\tMatch:\t\t', IMatch.getBeliefs())
+  print('\tAddress:\t', IAddress.getBeliefs())
+  print('\tAuthor:\t\t', IAuthor.getBeliefs())
+  print('\tPage:\t\t', IPage.getBeliefs())
+  print('\tPublisher:\t', IPublisher.getBeliefs())
+  print('\tTitle:\t\t', ITitle.getBeliefs())
+  print('\tVenue:\t\t', IVenue.getBeliefs())
+  print('\tYear:\t\t', IYear.getBeliefs())
 
-def main():
-  # TODO: Train the network
-  net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
-  display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
+
+############################# Using the function to check entity matching
+net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
+# Reset making bugs
+# net.reset()
+# # display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
 def is_match(entityA, entityB):
-  net.reset()
-  # Apply the network
+  # In the train data: 0 - match, 1 - unknown, 2 - notmatch
   # Setup Evident: 1 - match, 2 - unknown, 3 - notmatch
-  
-        
-  AddressEvident = feature_address(df.loc[i]['address'], df.loc[j]['address'])
-  AuthorEvident = feature_author(df.loc[i]['author'], df.loc[j]['author'])
-  PageEvident = feature_page(df.loc[i]['pages'], df.loc[j]['pages']),
-  PublisherEvident = feature_publisher(df.loc[i]['publisher'], df.loc[j]['publisher']),
-  TitleEvident = feature_title(df.loc[i]['title'], df.loc[j]['title']),
-        feature_venue(df.loc[i]['venue'], df.loc[j]['venue']),
-        feature_year(df.loc[i]['year'], df.loc[j]['year']),
-  TitleEvident = 1
-  VenueEvident = 2
-  YearEvident = 3
+  AddressEvident = feature_address(entityA['address'], entityB['address']) + 1
+  AuthorEvident = feature_author(entityA['author'], entityB['author']) + 1
+  PageEvident = feature_page(entityA['pages'], entityB['pages']) + 1
+  PublisherEvident = feature_publisher(entityA['publisher'], entityB['publisher']) + 1
+  TitleEvident = feature_title(entityA['title'], entityB['title']) + 1
+  VenueEvident = feature_venue(entityA['venue'], entityB['venue']) + 1
+  YearEvident = feature_year(entityA['year'], entityB['year']) + 1
 
-  calculate_match(net,
-  Address = AddressEvident,
-  Author = AuthorEvident,
-  Page = PageEvident,
-  Publisher = PublisherEvident,
-  Title = TitleEvident,
-  Venue =   VenueEvident,
-  Year = YearEvident)
+  # print('Match: ', AddressEvident == 1)
+  # print('Match: ', AuthorEvident == 1)
+  # print('Match: ', PageEvident == 1)
+  # print('Match: ', PublisherEvident == 1)
+  # print('Match: ', TitleEvident == 1)
+  # print('Match: ', VenueEvident == 1)
+  # print('Match: ', YearEvident == 1)
+
+  calculate_match(Inet = net,
+  IAddress = AddressEvident,
+  IAuthor = AuthorEvident,
+  IPage = PageEvident,
+  IPublisher = PublisherEvident,
+  ITitle = TitleEvident,
+  IVenue =   VenueEvident,
+  IYear = YearEvident)
+
+  display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
+
+  return Match.getBeliefs()[0] > threshold
+
+
+def main():
+  entityA = {
+    'address': '',
+    'author': 'John.D',
+    'pages': '100',
+    'publisher': '',
+    'title': 'A paper 2',
+    'venue': '',
+    'year': '2019'
+  }
+  entityB = {
+    'address': '123 Main St',
+    'author': 'John Doe',
+    'pages': '1-10',
+    'publisher': 'IEEE',
+    'title': 'A paper',
+    'venue': 'ICML',
+    'year': '2018'
+  }
+
+  print(is_match(entityA, entityB))
 
 # This is the standard boilerplate that calls the main() function.
 if __name__ == '__main__':
