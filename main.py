@@ -318,7 +318,7 @@ def display(IMatch, IAddress, IAuthor, IPage, IPublisher, ITitle, IVenue, IYear)
 net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
 # Reset making bugs
 # net.reset()
-# # display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
+display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
 
 def is_match(entityA, entityB):
   # In the train data: 0 - match, 1 - unknown, 2 - notmatch
@@ -356,21 +356,21 @@ def is_match(entityA, entityB):
 def main():
   entityA = {
     'address': '',
-    'author': 'John.D',
-    'pages': '100',
+    'author': 'avrim blum, merrick furst, jeffrey jackson, michael kearns, yishay mansour, and steven rudich.',
+    'pages': 'pages 253 - 262,',
     'publisher': '',
-    'title': 'A paper 2',
-    'venue': '',
-    'year': '2019'
+    'title': 'weakly learning dnf and characterizing statistical query learning using fourier analysis.',
+    'venue': 'in t he 26 th annual acm symposium on t heory of computing,',
+    'year': '1994'
   }
   entityB = {
-    'address': '123 Main St',
-    'author': 'John Doe',
-    'pages': '1-10',
-    'publisher': 'IEEE',
-    'title': 'A paper',
-    'venue': 'ICML',
-    'year': '2018'
+    'address': '',
+    'author': 'avrim blum, merrick furst, jeffery jackson, michael kearns, yishay mansour, and steven rudich.',
+    'pages': '',
+    'publisher': '',
+    'title': 'weakly learning dnf and characterizing statistical query learning using fourier analysis.',
+    'venue': 'in proceedings of twenty-sixth acm symposium on theory of computing,',
+    'year': '(1994)'
   }
 
   print(is_match(entityA, entityB))
