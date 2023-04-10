@@ -8,6 +8,8 @@ def isnull(str):
 
 
 def compare_strings_Levenshtein(string1, string2):
+    if isnull(string1) or isnull(string2):
+        return 0
     distance = Levenshtein.distance(string1, string2)
     similarity = 1 - (distance / len(string1))
     return similarity
@@ -28,34 +30,34 @@ def compare_strings_fuzz(string1, string2):
 def feature_address(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.6 else 2
 
 def feature_author(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_Levenshtein(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.7 else 2
 
 def feature_page(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.75 else 2
 
 def feature_publisher(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.55 else 2
 
 def feature_title(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_spacy(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.65 else 2
 
 def feature_venue(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_Levenshtein(string1, string2) >= 0.7 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.65 else 2
 
 def feature_year(string1, string2):
     if isnull(string1) or isnull(string2):
         return 1
-    return 0 if compare_strings_fuzz(string1, string2) >= 0.8 else 2
+    return 0 if compare_strings_fuzz(string1, string2) >= 0.9 else 2
