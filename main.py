@@ -114,7 +114,8 @@ def calculate_the_feature():
   validate_count(data_top, count)
   
   # for i in range(0, 10):
-  for i in range(0, len(data.index)):
+  # for i in range(0, len(data.index)):
+  for i in range(0, 600000):
     if i % 1000 == 0:
       print(i, " rows done...")
     match_header = 'Match' if int(data.loc[i].loc['Match']) == 1 else 'NotMatch'
@@ -129,7 +130,7 @@ def calculate_the_feature():
   if count['NotMatch']['Match'][0] == 0:
     count['NotMatch']['Match'][0] = 1
 
-  count['total'] = len(data.index)
+  # count['total'] = len(data.index)
 
   return count
 
@@ -138,7 +139,7 @@ def calculate_the_feature():
 def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year):
   # count = calculate_the_feature()
   # # This code will generate orther way if run again cause I have not change code
-  # total = count['total']
+  # # total = count['total']
 
   # with open('count.json', 'w') as file:
   #   json.dump(count, file)

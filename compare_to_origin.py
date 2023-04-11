@@ -7,6 +7,7 @@ with open('model.json', 'r') as file:
   model = json.load(file)
 
 threshold = 0.5
+sep_index = 600000
 
 def is_match(entityA, entityB):
   # In the train data: 0 - match, 1 - unknown, 2 - notmatch
@@ -25,19 +26,19 @@ def is_match(entityA, entityB):
 
   return (a / b) > threshold
 
-def test_model():
-  data = pd.read_csv("./data/train_data.csv", sep='|', engine='python', na_filter=False).astype(str)
-  df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
-  del df['editor']
-  del df['institution']
-  del df['month']
-  del df['note']
-  del df['volume']
-  del df['Unnamed: 13']
+data = pd.read_csv("./data/train_data.csv", sep='|', engine='python', na_filter=False).astype(str)
+df = pd.read_csv("./data/cora.csv", sep='|', engine='python', na_filter=False).astype(str)
+del df['editor']
+del df['institution']
+del df['month']
+del df['note']
+del df['volume']
+del df['Unnamed: 13']
 
+
+def test_model(start, end, ouput):
   check = []
-  for i in range(0, len(data.index)):
-  # for i in range(0, 10):
+  for i in range(start, end):
     if i % 1000 == 0:
       print(i, " rows done")
 
@@ -65,17 +66,17 @@ def test_model():
     check.append(1 if is_match(entityA, entityB) else 0)
 
   check_df = pd.DataFrame()
-  check_df['origin'] = data.loc[:, 'Match']
+  check_df['origin'] = data.loc[start : end - 1, 'Match']
   # check_df['origin'] = data.loc[0:9, 'Match']
   check_df['Predict'] = check
 
   comp_res = []
   # for i in range(0, len(check_df.index)):
-  for i in range(0, len(check_df.index)):
+  for i in range(start - sep_index, end - sep_index):
     comp_res.append(int(check_df.iloc[i, 0]) == int(check_df.iloc[i, 1]))
 
   check_df['Check_Result'] = comp_res
-  check_df.to_csv("data/check_train_data.csv", sep="|")
+  check_df.to_csv(ouput, sep="|")
 
 def main():
   entityA = {
@@ -102,5 +103,6 @@ def main():
 # This is the standard boilerplate that calls the main() function.
 # if __name__ == '__main__':
 #   main()
-test_model()
+# test_model(0, sep_index, "data/check_train_data.csv")
+test_model(sep_index, len(data.index), "data/check_test_data.csv")
 
