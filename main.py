@@ -137,7 +137,7 @@ def calculate_the_feature():
 ####################### Setup and used the Bayes Network
 def setup_Probability_Distribution(Match, Address, Author, Page, Publisher, Title, Venue, Year):
   # count = calculate_the_feature()
-  ## This code will generate orther way if run again cause I have not change code
+  # # This code will generate orther way if run again cause I have not change code
   # total = count['total']
 
   # with open('count.json', 'w') as file:
@@ -312,13 +312,24 @@ def display(IMatch, IAddress, IAuthor, IPage, IPublisher, ITitle, IVenue, IYear)
   print('\tVenue:\t\t', IVenue.getBeliefs())
   print('\tYear:\t\t', IYear.getBeliefs())
 
+  return {
+    'Match': IMatch.getBeliefs(),
+    'Address': IAddress.getBeliefs(),
+    'Author': IAuthor.getBeliefs(),
+    'Page': IPage.getBeliefs(),
+    'Publisher': IPublisher.getBeliefs(),
+    'Title': ITitle.getBeliefs(),
+    'Venue': IVenue.getBeliefs(),
+    'Year': IYear.getBeliefs()
+  }
+
 
 
 ############################# Using the function to check entity matching
 net, Match, Address, Author, Page, Publisher, Title, Venue, Year = setup_Network()
-# Reset making bugs
-# net.reset()
-display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
+model = display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
+# with open('model.json', 'w') as file:
+#     json.dump(model, file)
 
 def is_match(entityA, entityB):
   # In the train data: 0 - match, 1 - unknown, 2 - notmatch
@@ -331,26 +342,11 @@ def is_match(entityA, entityB):
   VenueEvident = feature_venue(entityA['venue'], entityB['venue']) + 1
   YearEvident = feature_year(entityA['year'], entityB['year']) + 1
 
-  # print('Match: ', AddressEvident == 1)
-  # print('Match: ', AuthorEvident == 1)
-  # print('Match: ', PageEvident == 1)
-  # print('Match: ', PublisherEvident == 1)
-  # print('Match: ', TitleEvident == 1)
-  # print('Match: ', VenueEvident == 1)
-  # print('Match: ', YearEvident == 1)
+  a = (model['Address'][AddressEvident - 1] * model['Author'][AuthorEvident - 1] * model['Page'][PageEvident - 1] * model['Publisher'][PublisherEvident - 1] * model['Title'][TitleEvident - 1] * model['Venue'][VenueEvident - 1] * model['Year'][YearEvident - 1]) * model['Match'][0]
 
-  calculate_match(Inet = net,
-  IAddress = AddressEvident,
-  IAuthor = AuthorEvident,
-  IPage = PageEvident,
-  IPublisher = PublisherEvident,
-  ITitle = TitleEvident,
-  IVenue =   VenueEvident,
-  IYear = YearEvident)
+  b = a + (model['Address'][AddressEvident + 2] * model['Author'][AuthorEvident + 2] * model['Page'][PageEvident + 2] * model['Publisher'][PublisherEvident + 2] * model['Title'][TitleEvident + 2] * model['Venue'][VenueEvident + 2] * model['Year'][YearEvident + 2]) * model['Match'][1]
 
-  display(Match, Address, Author, Page, Publisher, Title, Venue, Year)
-
-  return Match.getBeliefs()[0] > threshold
+  return (a / b) > threshold
 
 
 def main():
